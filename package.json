@@ -1,0 +1,44 @@
+{
+  "name": "overlayed",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build": "npm run clean & tsc & npm run build-static",
+    "build-static": "echo require('recursive-copy')(__dirname + '/src', 'dist', {filter: ['!dist**', '!node_modules**', '**/*.html', '**/package.json']})  | node",
+    "start": "electron .",
+    "start-debug": "electron --inspect=5858 .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bengreenier/overlayed.git"
+  },
+  "author": "Ben Greenier",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bengreenier/overlayed/issues"
+  },
+  "homepage": "https://github.com/bengreenier/overlayed#readme",
+  "dependencies": {
+    "electron": "^2.0.6",
+    "electron-settings": "^3.2.0",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2",
+    "react-grid-layout": "^0.16.6"
+  },
+  "devDependencies": {
+    "@types/electron-settings": "^3.1.1",
+    "@types/react": "^16.4.8",
+    "@types/react-dom": "^16.0.7",
+    "@types/react-grid-layout": "^0.16.5",
+    "prettier": "1.14.0",
+    "recursive-copy": "^2.0.9",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.14.0",
+    "tslint-react": "^3.6.0",
+    "typescript": "^3.0.1"
+  }
+}
