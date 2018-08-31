@@ -1,0 +1,21 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+    <title>Overlayed</title>
+    <style>
+    html, body {
+      background: rgba(0, 0, 0, 0);
+      overflow: hidden;
+    }
+    </style>
+    <link rel="stylesheet" type="text/css" href="../../../node_modules/react-grid-layout/css/styles.css"/>
+    <link rel="stylesheet" type="text/css" href="../../../node_modules/react-resizable/css/styles.css"/>
+  </head>
+  <body>
+    <div id="react-dom-bind"></div>
+
+    <!-- so uhm. this makes typescript transpiling not sad..needs more investigation -->
+    <script src="../helpers/fix-export.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
