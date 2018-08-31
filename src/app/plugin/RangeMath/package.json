@@ -1,0 +1,8 @@
+{
+  "name": "range-math",
+  "version": "0.0.1",
+  "main": "RangeMathPlugin.js",
+  "dependencies": {
+    "range-fit": "^0.1.1"
+  }
+}

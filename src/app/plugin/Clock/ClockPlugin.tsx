@@ -1,16 +1,11 @@
-import { IPlugin } from "../IPlugin"
+import { IInstalledPlugin } from "../IPlugin"
 import React from "react"
 
 interface IState {
   date : Date
 }
 
-export default class ClockPlugin extends React.Component<any, IState> implements IPlugin {
-  public diskPath: string = __dirname
-  public name: string = 'Clock'
-  public version: string = '0.0.1'
-  public requiresInstall: boolean = false
-
+export default class ClockPlugin extends React.Component<any, IState> {
   private clockInterval ?: number
 
   constructor(props : any) {

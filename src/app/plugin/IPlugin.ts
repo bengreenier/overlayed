@@ -1,11 +1,6 @@
 import React from "react";
 
-/**
- * Interface for a plugin
- * 
- * Note: Plugins should each have their own folder
- */
-export interface IPlugin {
+export interface IPluginProperties {
   /**
    * Absolute path on disk to the plugin directory
    */
@@ -28,6 +23,20 @@ export interface IPlugin {
 }
 
 /**
- * Interface for a plugin that is also a react component
+ * Interface for a plugin
+ * 
+ * Note: Plugins should each have their own folder
  */
-export interface IReactPlugin extends React.Component<any, any>, IPlugin {}
+export interface IInstalledPlugin extends IPluginProperties{
+  /**
+   * The actual react component
+   */
+  component: React.Component<any, any>
+}
+
+export interface IInstallNeededPlugin extends IPluginProperties {
+  /**
+   * The path to the component
+   */
+  component: string
+}

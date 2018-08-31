@@ -24,6 +24,7 @@
   "dependencies": {
     "electron": "^2.0.6",
     "electron-settings": "^3.2.0",
+    "enpeem": "^2.2.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-grid-layout": "^0.16.6"
