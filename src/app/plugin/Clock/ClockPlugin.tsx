@@ -1,10 +1,12 @@
-import { IInstalledPlugin } from "../IPlugin"
 import React from "react"
 
 interface IState {
   date : Date
 }
 
+/**
+ * Example stateful plugin
+ */
 export default class ClockPlugin extends React.Component<any, IState> {
   private clockInterval ?: number
 

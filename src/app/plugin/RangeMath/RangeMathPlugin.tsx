@@ -3,6 +3,9 @@ import React from "react"
 // require call because our tsc compiler will complain otherwise
 const rangeFit = require('range-fit')
 
+/**
+ * Example plugin with npm dependency
+ */
 export default class RangeMathPlugin extends React.Component<any, any> {
   constructor(props : any) {
     super(props)

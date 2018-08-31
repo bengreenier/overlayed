@@ -25,12 +25,14 @@
     "electron": "^2.0.6",
     "electron-settings": "^3.2.0",
     "enpeem": "^2.2.0",
+    "moment": "^2.22.2",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-grid-layout": "^0.16.6"
   },
   "devDependencies": {
     "@types/electron-settings": "^3.1.1",
+    "@types/moment": "^2.13.0",
     "@types/react": "^16.4.8",
     "@types/react-dom": "^16.0.7",
     "@types/react-grid-layout": "^0.16.5",
