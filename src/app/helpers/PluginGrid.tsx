@@ -25,8 +25,15 @@ interface IState {
   plugins: IInstalledPlugin[]
 }
 
-export class PluginGrid extends React.Component<any, IState> {
-  constructor(props : any) {
+export interface IPluginGridProps {
+  /**
+   * Directory where user stores plugins
+   */
+  userPluginDir ?: string
+}
+
+export class PluginGrid extends React.Component<IPluginGridProps, IState> {
+  constructor(props : IPluginGridProps) {
     super(props)
 
     this.state = {
@@ -48,9 +55,12 @@ export class PluginGrid extends React.Component<any, IState> {
     </RGL>)
   }
 
+  /**
+   * Load all plugins, internal and user async
+   */
   private loadPlugins() {
     // splits out install required and !install required plugins
-    const plugins = this.getInternalPlugins()
+    const plugins = this.getInternalPlugins().concat(this.getUserPlugins())
     const noInstallNeeded = plugins.filter(p => !p.requiresInstall) as IInstalledPlugin[]
     const installNeeded = plugins.filter(p => p.requiresInstall) as IInstallNeededPlugin[]
     
@@ -68,9 +78,36 @@ export class PluginGrid extends React.Component<any, IState> {
     })
   }
 
+  /**
+   * Get user plugins from props.userPluginDir
+   */
+  private getUserPlugins() {
+    if (!this.props.userPluginDir) {
+      return [] as any
+    }
+
+    return this.getPlugins(this.props.userPluginDir)
+  }
+
+  /**
+   * Get internally defined plugins
+   */
   private getInternalPlugins() {
+    return this.getPlugins(`${__dirname}/../plugin`)
+  }
+
+  /**
+   * Get plugins from a given directory
+   * @param dir the directory to search
+   */
+  private getPlugins(dir : string) {
+    // if the dir is no good, gtfo
+    if (!existsSync(dir)) {
+      return []
+    }
+
     // enumerating internal plugin directories
-    return getDirectories(`${__dirname}/../plugin`).map((pluginDir) => {
+    return getDirectories(dir).map((pluginDir) => {
       const jsonData = readFileSync(join(pluginDir, 'package.json')).toString()
       const pkg = JSON.parse(jsonData)
       const componentPath = join(pluginDir, pkg['main'] as string)
