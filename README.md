@@ -3,6 +3,7 @@
 ![project status](https://img.shields.io/badge/Project%20Status-Alpha-red.svg)
 [![GitHub release](https://img.shields.io/github/release/bengreenier/overlayed.svg)](https://github.com/bengreenier/overlayed/releases)
 [![Build Status](https://travis-ci.org/bengreenier/overlayed.svg?branch=master)](https://travis-ci.org/bengreenier/overlayed)
+[![Discord](https://img.shields.io/discord/393575719545864222.svg)](https://discord.gg/Vg7VMVe)
 
 ![overlayed header](./.github/header.png)
 
