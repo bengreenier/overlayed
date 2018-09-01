@@ -1,10 +1,10 @@
+import enpeem from 'enpeem'
+import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import moment from 'moment'
+import { join } from 'path'
 import React, { CSSProperties } from 'react'
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout'
-import { lstatSync, readdirSync, readFileSync, writeFileSync, existsSync } from 'fs'
-import { join } from 'path'
-import enpeem from 'enpeem'
-import moment from 'moment'
-import { IInstalledPlugin, IPluginProperties, IInstallNeededPlugin } from '../plugin/IPlugin'
+import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
 
 const isDirectory = (source : string) => lstatSync(source).isDirectory()
 const getDirectories = (source : string)  =>
@@ -46,13 +46,14 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   }
 
   public render() {
-    return (<RGL
-      compactType={null}
-      useCSSTransforms={true}
-    >
-      {this.state.plugins.map(plugin =>
-        <div key={`${plugin.name}@${plugin.version}`} style={pluginElementStyles}>{React.createElement(plugin.component as any, null)}</div>)}
-    </RGL>)
+    return (
+      <RGL
+        compactType={null}
+        useCSSTransforms={true}
+      >
+        {this.state.plugins.map(plugin => <div key={`${plugin.name}@${plugin.version}`} style={pluginElementStyles}>{React.createElement(plugin.component as any, null)}</div>)}
+      </RGL>
+    )
   }
 
   /**
@@ -70,10 +71,10 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     })
 
     // install the uninstalled plugins
-    Promise.all(this.installPlugins(installNeeded)).then((plugins) => {
+    Promise.all(this.installPlugins(installNeeded)).then((installedPlugins) => {
       // when these load, merge them in
       this.setState({
-        plugins: this.state.plugins.concat(plugins)
+        plugins: this.state.plugins.concat(installedPlugins)
       })
     })
   }
@@ -110,10 +111,10 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     return getDirectories(dir).map((pluginDir) => {
       const jsonData = readFileSync(join(pluginDir, 'package.json')).toString()
       const pkg = JSON.parse(jsonData)
-      const componentPath = join(pluginDir, pkg['main'] as string)
+      const componentPath = join(pluginDir, pkg.main as string)
 
       // by default we install if there's deps
-      let needsInstall = pkg['dependencies'] && Object.keys(pkg['dependencies']).length > 0 ? true : false
+      let needsInstall = pkg.dependencies && Object.keys(pkg.dependencies).length > 0 ? true : false
 
       // however, if there's an install lockfile
       const installLockFilePath = join(pluginDir, pluginInstalledLockFileName)
@@ -137,9 +138,9 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       // generate plugin structure
       const plugin : IPluginProperties = {
         diskPath: pluginDir,
-        name: pkg['name'],
-        version: pkg['version'],
-        requiresInstall: needsInstall
+        name: pkg.name,
+        requiresInstall: needsInstall,
+        version: pkg.version,
       }
 
       // if we need deps installed, we can't load the plugin yet, so we don't
@@ -156,7 +157,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     })
   }
 
-  private installPlugins(plugins : IInstallNeededPlugin[]) : PromiseLike<IInstalledPlugin>[] {
+  private installPlugins(plugins : IInstallNeededPlugin[]) : Array<PromiseLike<IInstalledPlugin>> {
     // map all the plugins to install promises
     return plugins.map((plugin) => {
       // take the plugin data
@@ -164,26 +165,26 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       const pkg = JSON.parse(jsonData)
 
       // convert the deps to an array
-      const deps = Object.keys(pkg['dependencies']).map(k => `${k}@${pkg['dependencies'][k]}`)
+      const deps = Object.keys(pkg.dependencies).map(k => `${k}@${pkg.dependencies[k]}`)
 
-      //install the plugin deps in the plugin's directory
+      // install the plugin deps in the plugin's directory
       return new Promise<IInstalledPlugin>((resolve, reject) => {
         enpeem.install({
+          dependencies: deps,
           dir: plugin.diskPath,
-          dependencies: deps
         }, (err) => {
           // if we error, fail out, otherwise resolve to an IInstalledPlugin
-          if (err) reject(err)
+          if (err) { reject(err) }
           resolve({...plugin, ...{
             component: require(plugin.component).default as React.Component<any, any>
           }} as IInstalledPlugin)
         })
-      }).then((plugin) => {
+      }).then((installedPlugin) => {
 
         // mark the plugin as installed @ this time
-        writeFileSync(join(plugin.diskPath, pluginInstalledLockFileName), moment().toISOString())
+        writeFileSync(join(installedPlugin.diskPath, pluginInstalledLockFileName), moment().toISOString())
 
-        return plugin
+        return installedPlugin
       })
     })
   }

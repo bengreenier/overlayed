@@ -1,6 +1,8 @@
 import React from "react"
 
 // require call because our tsc compiler will complain otherwise
+//
+// tslint:disable-next-line:no-var-requires
 const rangeFit = require('range-fit')
 
 /**

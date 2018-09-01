@@ -1,5 +1,5 @@
-import settings from 'electron-settings'
 import { app, Menu, MenuItem, nativeImage, Tray } from 'electron'
+import settings from 'electron-settings'
 import { CompositeWindow } from './electron/CompositeWindow'
 
 let mainWindow : CompositeWindow
@@ -15,10 +15,10 @@ const allocMainWindow = () => {
 
   // see if we have window settings, if so, use them
   const windowDims = settings.get(windowDimsSettingsKey, {
+    height: 480,
+    width: 680,
     x: 0,
     y: 0,
-    width: 680,
-    height: 480
   }) as {x: number, y: number, width: number, height: number}
 
   // create our window

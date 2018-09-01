@@ -1,8 +1,8 @@
+import os from 'os'
+import { join } from 'path'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { PluginGrid } from '../helpers/PluginGrid'
-import os from 'os'
-import { join } from 'path'
 
 // the constant user plugin dir
 const userPluginDir = join(os.homedir(), '.overlayed')

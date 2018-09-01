@@ -12,6 +12,6 @@ export interface IMuxyAlertConfiguration {
  */
 export default class MuxyAlertsPlugin extends React.Component<IMuxyAlertConfiguration, any> {
   public render() {
-    return <webview src={this.props.alertUrl == null ? '#about' : this.props.alertUrl}></webview>
+    return <webview src={this.props.alertUrl == null ? '#about' : this.props.alertUrl} />
   }
 }
