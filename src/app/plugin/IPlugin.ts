@@ -31,7 +31,7 @@ export interface IInstalledPlugin extends IPluginProperties{
   /**
    * The actual react component
    */
-  component: React.Component<any, any>
+  component: React.ComponentType<any>
 }
 
 export interface IInstallNeededPlugin extends IPluginProperties {

@@ -2,9 +2,10 @@ import enpeem from 'enpeem'
 import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import moment from 'moment'
 import { join } from 'path'
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout'
 import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
+import { Plugin, pluginStyles } from './Plugin'
 
 const isDirectory = (source : string) => lstatSync(source).isDirectory()
 const getDirectories = (source : string)  =>
@@ -16,12 +17,10 @@ const RGL = WidthProvider(ReactGridLayout)
 // the constant for the name of the install lockfile
 const pluginInstalledLockFileName = 'overlayed-install.lock'
 
-// these styles get applied to plugins
-const pluginElementStyles = {
-  backgroundColor: 'green'
-} as CSSProperties
-
 interface IState {
+  /**
+   * The installed plugins that we're currently showing
+   */
   plugins: IInstalledPlugin[]
 }
 
@@ -46,12 +45,14 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   }
 
   public render() {
+    // we need to wrap plugin in a div for RGL to work properly :(
+    // see https://github.com/STRML/react-grid-layout/issues/397
     return (
       <RGL
         compactType={null}
         useCSSTransforms={true}
       >
-        {this.state.plugins.map(plugin => <div key={`${plugin.name}@${plugin.version}`} style={pluginElementStyles}>{React.createElement(plugin.component as any, null)}</div>)}
+        {this.state.plugins.map(pluginData => <div style={pluginStyles} key={`${pluginData.name}@${pluginData.version}`}><Plugin plugin={pluginData}/></div>)}
       </RGL>
     )
   }
@@ -151,7 +152,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
         }} as IInstallNeededPlugin
       } else {
         return {...plugin, ...{
-          component: require(componentPath).default as React.Component<any, any>
+          component: require(componentPath).default as React.ComponentType<any>
         }} as IInstalledPlugin
       }
     })
@@ -176,7 +177,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
           // if we error, fail out, otherwise resolve to an IInstalledPlugin
           if (err) { reject(err) }
           resolve({...plugin, ...{
-            component: require(plugin.component).default as React.Component<any, any>
+            component: require(plugin.component).default as React.ComponentType<any>
           }} as IInstalledPlugin)
         })
       }).then((installedPlugin) => {

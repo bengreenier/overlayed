@@ -1,5 +1,12 @@
 import React from "react"
 
+interface IProps {
+  /**
+   * Visualized locale
+   */
+  locale ?: string
+}
+
 interface IState {
   date : Date
 }
@@ -7,10 +14,14 @@ interface IState {
 /**
  * Example stateful plugin
  */
-export default class ClockPlugin extends React.Component<any, IState> {
+export default class ClockPlugin extends React.Component<IProps, IState> {
+  public static defaultProps : IProps = {
+    locale: 'en-US'
+  }
+
   private clockInterval ?: number
 
-  constructor(props : any) {
+  constructor(props : IProps) {
     super(props)
 
     this.state = {
@@ -29,7 +40,7 @@ export default class ClockPlugin extends React.Component<any, IState> {
   }
 
   public render() {
-    return <h1>{this.state.date.toLocaleTimeString()}</h1>
+    return <h1>{this.state.date.toLocaleTimeString(this.props.locale)}</h1>
   }
 
   private tick() {
