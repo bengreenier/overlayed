@@ -12,7 +12,7 @@ interface IState {
 }
 
 /**
- * Example stateful plugin
+ * Example settings-consuming plugin
  */
 export default class ClockPlugin extends React.Component<IProps, IState> {
   public static defaultProps : IProps = {
