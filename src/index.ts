@@ -1,6 +1,7 @@
-import { app, Menu, MenuItem, nativeImage, Tray } from 'electron'
+import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from 'electron'
 import settings from 'electron-settings'
 import { CompositeWindow } from './electron/CompositeWindow'
+import { IPCMessageNames } from './ipc/IPCMessageNames';
 
 let mainWindow : CompositeWindow
 let mainTray : Tray
@@ -26,6 +27,28 @@ const allocMainWindow = () => {
   
   // tell the window to load the entry point
   mainWindow.loadFile(`${__dirname}/app/main/main.html`)
+
+  let isShuttingDown = false
+  mainWindow.on('close', (e) => {
+    if (!isShuttingDown) {
+      e.preventDefault()
+  
+      isShuttingDown = true
+      
+      // if we aren't shutdown in 5s, force it
+      setTimeout(() => {
+        mainWindow.close()
+      }, 5000)
+
+      // listen for react to complete
+      ipcMain.on(IPCMessageNames.AllowShutdown, () => {
+        mainWindow.close()
+      })
+
+      // ask react to shutdown
+      mainWindow.webContents.send(IPCMessageNames.RequestShutdown)
+    }
+  })
 
   // save state when we're closing
   mainWindow.on('close', () => {

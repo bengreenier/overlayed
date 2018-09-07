@@ -13,15 +13,15 @@ import { Plugin, pluginStyles } from './Plugin'
 // makes the RGL responsive-ish
 const RGL = WidthProvider(ReactGridLayout)
 
-interface IState {
+interface ISettings {
+  layout: Layout[]
+}
+
+interface IState extends ISettings {
   /**
    * The installed plugins that we're currently showing
    */
   plugins: IInstalledPlugin[]
-}
-
-interface ISettings {
-  layout: Layout[]
 }
 
 export interface IPluginGridProps extends IManipulateSettingsProps<ISettings>, ISettings {
@@ -32,6 +32,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     super(props)
 
     this.state = {
+      layout: this.props.layout,
       plugins: []
     }
 
@@ -40,6 +41,13 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
 
   public componentDidMount() {
     this.loadPlugins()
+  }
+
+  public componentWillUnmount() {
+    // persist layout to disk
+    this.props.updateSettings({
+      layout: this.state.layout
+    })
   }
 
   public render() {
@@ -66,7 +74,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
 
   private preprocessLayoutData() {
     const layoutIndexMap : {[key : string] : any} = {}
-    this.props.layout.forEach((elem : any) => {
+    this.state.layout.forEach((elem : any) => {
       layoutIndexMap[elem.i] = elem
     })
 
@@ -76,7 +84,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   private onLayoutChanged(layout: Layout[]) {
     // RGL bug - fires with empty array sometimes
     if (layout.length > 0) {
-      this.props.updateSettings({
+      this.setState({
         layout
       })
     }

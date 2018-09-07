@@ -36,9 +36,7 @@ export default class RangeMathPlugin extends React.Component<IProps, ISettings> 
       clearInterval(this.tickInterval)
     }
 
-    // we can do this when https://github.com/bengreenier/overlayed/issues/17 is resolved
-    // 
-    // this.props.updateSettings(this.state)
+    this.props.updateSettings(this.state)
   }
 
   public render() {
@@ -49,8 +47,5 @@ export default class RangeMathPlugin extends React.Component<IProps, ISettings> 
     this.setState({
       value: this.state.value + 1
     })
-    
-    // write this out each tick
-    this.props.updateSettings(this.state)
   }
 }
