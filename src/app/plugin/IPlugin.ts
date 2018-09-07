@@ -19,7 +19,12 @@ export interface IPluginProperties {
   /**
    * Does the plugin require an `npm install`
    */
-  requiresInstall: boolean
+  requiresInstall: boolean,
+
+  /**
+   * The object containing plugin settings
+   */
+  settings: any
 }
 
 /**

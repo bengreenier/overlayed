@@ -1,6 +1,5 @@
 import React, { CSSProperties } from 'react'
 import { withSettings } from '../helpers/serialization'
-import { withVisibilityToggle } from '../helpers/visibility'
 import { IInstalledPlugin } from '../plugin/IPlugin'
 
 interface IPluginProps {
@@ -17,7 +16,7 @@ export const pluginStyles = {
 
 export class Plugin extends React.Component<IPluginProps, any> {
   public render() {
-    const PluginWithSettings = withSettings(withVisibilityToggle(this.props.plugin.component))
+    const PluginWithSettings = withSettings(this.props.plugin.component, this.props.plugin.settings)
 
     return (
       <PluginWithSettings settingsKey={this.props.plugin.name} />
