@@ -1,4 +1,5 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron"
+import { IPCMessageNames } from "../ipc/IPCMessageNames";
 
 /**
  * Overlay style electron window
@@ -26,6 +27,9 @@ export class CompositeWindow extends BrowserWindow {
 
     this.setFocusable(this.isInteractive)
     this.setIgnoreMouseEvents(!this.isInteractive)
+
+    // notify react side
+    this.webContents.send(IPCMessageNames.ToggleEditMode, this.isInteractive)
   }
 
   /**

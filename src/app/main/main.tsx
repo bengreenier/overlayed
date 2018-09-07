@@ -9,17 +9,43 @@ import { PluginGrid } from './PluginGrid'
 
 const PluginGridWithSettings = withSettings(PluginGrid as React.ComponentType<any>)
 
+interface IState {
+  isEditMode : boolean
+}
+
 /**
  * Top Level react component
  */
-class MainApp extends React.Component<any, any> {
+class MainApp extends React.Component<any, IState> {
+  constructor(props : any) {
+    super(props)
+
+    this.state = {
+      isEditMode: false
+    }
+
+    this.onToggleEditMode = this.onToggleEditMode.bind(this)
+  }
+
+  public componentDidMount() {
+    ipcRenderer.addListener(IPCMessageNames.ToggleEditMode, this.onToggleEditMode)
+  }
+
   public componentWillUnmount() {
-    // tslint:disable-next-line:no-console
-    console.log('unmount main')
+    ipcRenderer.removeListener(IPCMessageNames.ToggleEditMode, this.onToggleEditMode)
   }
 
   public render() {
-    return <PluginGridWithSettings settingsKey={'overlayed.grid'} />
+    return <PluginGridWithSettings settingsKey={'overlayed.grid'} isEditMode={this.state.isEditMode} />
+  }
+
+  private onToggleEditMode(e : any, electronReportedToggleVal : boolean) {
+    // make sure we aren't out of step with electron :)
+    if (this.state.isEditMode !== electronReportedToggleVal) {
+      this.setState({
+        isEditMode: !this.state.isEditMode
+      })
+    }
   }
 }
 

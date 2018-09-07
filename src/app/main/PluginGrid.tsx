@@ -1,20 +1,20 @@
-import { remote } from 'electron'
 import enpeem from 'enpeem'
-import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
+import { readFileSync, writeFileSync } from 'fs'
 import moment from 'moment'
 import { join } from 'path'
-import React from 'react'
+import React, { CSSProperties } from 'react'
 import ReactGridLayout, { Layout, WidthProvider } from 'react-grid-layout'
 import { pluginInstalledLockFileName } from '../helpers/constants'
 import { getPlugins, IManipulateSettingsProps } from '../helpers/serialization'
 import { IInstalledPlugin, IInstallNeededPlugin } from '../plugin/IPlugin'
-import { Plugin, pluginStyles } from './Plugin'
+import { Plugin } from './Plugin'
 
 // makes the RGL responsive-ish
 const RGL = WidthProvider(ReactGridLayout)
 
 interface ISettings {
   layout: Layout[]
+  editStyles: CSSProperties
 }
 
 interface IState extends ISettings {
@@ -25,6 +25,7 @@ interface IState extends ISettings {
 }
 
 export interface IPluginGridProps extends IManipulateSettingsProps<ISettings>, ISettings {
+  isEditMode : boolean
 }
 
 export class PluginGrid extends React.Component<IPluginGridProps, IState> {
@@ -32,6 +33,9 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     super(props)
 
     this.state = {
+      editStyles: this.props.editStyles || {
+        backgroundColor: 'rgba(51, 138, 46, 0.6)'
+      },
       layout: this.props.layout,
       plugins: []
     }
@@ -46,7 +50,8 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   public componentWillUnmount() {
     // persist layout to disk
     this.props.updateSettings({
-      layout: this.state.layout
+      editStyles: this.state.editStyles,
+      layout: this.state.layout,
     })
   }
 
@@ -69,7 +74,14 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
 
     return this.state.plugins
       .filter(p => !p.settings.hidden)
-      .map(p => <div style={pluginStyles} key={`${p.name}@${p.version}`} data-grid={layoutMap[`${p.name}@${p.version}`]}><Plugin plugin={p}/></div>)
+      .map(p => (
+        <div
+          style={this.props.isEditMode ? this.state.editStyles : {}}
+          key={`${p.name}@${p.version}`}
+          data-grid={layoutMap[`${p.name}@${p.version}`]}
+        >
+          <Plugin plugin={p}/>
+        </div>))
   }
 
   private preprocessLayoutData() {
