@@ -1,3 +1,4 @@
+import { remote } from 'electron'
 import enpeem from 'enpeem'
 import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 'fs'
 import moment from 'moment'
@@ -7,6 +8,9 @@ import ReactGridLayout, { WidthProvider } from 'react-grid-layout'
 import { getPlugins } from '../helpers/serialization'
 import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
 import { Plugin, pluginStyles } from './Plugin'
+
+// need to use the remote require because electron-settings asks us to (see wiki)
+const settings = remote.require('electron-settings')
 
 const isDirectory = (source : string) => lstatSync(source).isDirectory()
 const getDirectories = (source : string)  =>
@@ -59,9 +63,22 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   }
 
   private generatePluginComponents() {
+    const layoutMap = this.preprocessLayoutData()
+
     return this.state.plugins
       .filter(p => !p.settings.hidden)
-      .map(p => <div style={pluginStyles} key={`${p.name}@${p.version}`}><Plugin plugin={p}/></div>)
+      .map(p => <div style={pluginStyles} key={`${p.name}@${p.version}`} data-grid={layoutMap[`${p.name}@${p.version}`]}><Plugin plugin={p}/></div>)
+  }
+
+  private preprocessLayoutData() {
+    const layoutArr = settings.get('overlayed.grid.layout')
+
+    const layoutIndexMap : {[key : string] : any} = {}
+    layoutArr.forEach((elem : any) => {
+      layoutIndexMap[elem.i] = elem
+    })
+
+    return layoutIndexMap
   }
 
   /**
