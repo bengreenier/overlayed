@@ -4,6 +4,7 @@ import moment from 'moment'
 import { join } from 'path'
 import React from 'react'
 import ReactGridLayout, { WidthProvider } from 'react-grid-layout'
+import { getPlugins } from '../helpers/serialization'
 import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
 import { Plugin, pluginStyles } from './Plugin'
 
@@ -52,9 +53,15 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
         compactType={null}
         useCSSTransforms={true}
       >
-        {this.state.plugins.map(pluginData => <div style={pluginStyles} key={`${pluginData.name}@${pluginData.version}`}><Plugin plugin={pluginData}/></div>)}
+        {this.generatePluginComponents()}
       </RGL>
     )
+  }
+
+  private generatePluginComponents() {
+    return this.state.plugins
+      .filter(p => !p.settings.hidden)
+      .map(p => <div style={pluginStyles} key={`${p.name}@${p.version}`}><Plugin plugin={p}/></div>)
   }
 
   /**
@@ -62,7 +69,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
    */
   private loadPlugins() {
     // splits out install required and !install required plugins
-    const plugins = this.getInternalPlugins().concat(this.getUserPlugins())
+    const plugins = getPlugins()
     const noInstallNeeded = plugins.filter(p => !p.requiresInstall) as IInstalledPlugin[]
     const installNeeded = plugins.filter(p => p.requiresInstall) as IInstallNeededPlugin[]
     
@@ -77,84 +84,6 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       this.setState({
         plugins: this.state.plugins.concat(installedPlugins)
       })
-    })
-  }
-
-  /**
-   * Get user plugins from props.userPluginDir
-   */
-  private getUserPlugins() {
-    if (!this.props.userPluginDir) {
-      return [] as any
-    }
-
-    return this.getPlugins(this.props.userPluginDir)
-  }
-
-  /**
-   * Get internally defined plugins
-   */
-  private getInternalPlugins() {
-    return this.getPlugins(`${__dirname}/../plugin`)
-  }
-
-  /**
-   * Get plugins from a given directory
-   * @param dir the directory to search
-   */
-  private getPlugins(dir : string) {
-    // if the dir is no good, gtfo
-    if (!existsSync(dir)) {
-      return []
-    }
-
-    // enumerating internal plugin directories
-    return getDirectories(dir).map((pluginDir) => {
-      const jsonData = readFileSync(join(pluginDir, 'package.json')).toString()
-      const pkg = JSON.parse(jsonData)
-      const componentPath = join(pluginDir, pkg.main as string)
-
-      // by default we install if there's deps
-      let needsInstall = pkg.dependencies && Object.keys(pkg.dependencies).length > 0 ? true : false
-
-      // however, if there's an install lockfile
-      const installLockFilePath = join(pluginDir, pluginInstalledLockFileName)
-      if (existsSync(installLockFilePath)) {
-        const installLockFile = readFileSync(installLockFilePath).toString()
-
-        // we check if it's been installed in the last day
-        // if it has we don't install again
-        if (installLockFile) {
-          const installDate = moment(installLockFile)
-
-          // TODO(begreenier): support force install
-          if (installDate.add(1, 'day').isBefore(moment())) {
-            needsInstall = true
-          } else {
-            needsInstall = false
-          }
-        }
-      }
-
-      // generate plugin structure
-      const plugin : IPluginProperties = {
-        diskPath: pluginDir,
-        name: pkg.name,
-        requiresInstall: needsInstall,
-        version: pkg.version,
-      }
-
-      // if we need deps installed, we can't load the plugin yet, so we don't
-      // we return a variant of IPluginProperties
-      if (plugin.requiresInstall) {
-        return {...plugin, ...{
-          component: componentPath
-        }} as IInstallNeededPlugin
-      } else {
-        return {...plugin, ...{
-          component: require(componentPath).default as React.ComponentType<any>
-        }} as IInstalledPlugin
-      }
     })
   }
 

@@ -16,7 +16,7 @@ export const pluginStyles = {
 
 export class Plugin extends React.Component<IPluginProps, any> {
   public render() {
-    const PluginWithSettings = withSettings(this.props.plugin.component)
+    const PluginWithSettings = withSettings(this.props.plugin.component, this.props.plugin.settings)
 
     return (
       <PluginWithSettings settingsKey={this.props.plugin.name} />
