@@ -4,23 +4,14 @@ import { existsSync, lstatSync, readdirSync, readFileSync, writeFileSync } from 
 import moment from 'moment'
 import { join } from 'path'
 import React from 'react'
-import ReactGridLayout, { WidthProvider } from 'react-grid-layout'
-import { getPlugins } from '../helpers/serialization'
-import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
+import ReactGridLayout, { Layout, WidthProvider } from 'react-grid-layout'
+import { pluginInstalledLockFileName } from '../helpers/constants'
+import { getPlugins, IManipulateSettingsProps } from '../helpers/serialization'
+import { IInstalledPlugin, IInstallNeededPlugin } from '../plugin/IPlugin'
 import { Plugin, pluginStyles } from './Plugin'
-
-// need to use the remote require because electron-settings asks us to (see wiki)
-const settings = remote.require('electron-settings')
-
-const isDirectory = (source : string) => lstatSync(source).isDirectory()
-const getDirectories = (source : string)  =>
-  readdirSync(source).map((name : string) => join(source, name)).filter(isDirectory)
 
 // makes the RGL responsive-ish
 const RGL = WidthProvider(ReactGridLayout)
-
-// the constant for the name of the install lockfile
-const pluginInstalledLockFileName = 'overlayed-install.lock'
 
 interface IState {
   /**
@@ -29,11 +20,11 @@ interface IState {
   plugins: IInstalledPlugin[]
 }
 
-export interface IPluginGridProps {
-  /**
-   * Directory where user stores plugins
-   */
-  userPluginDir ?: string
+interface ISettings {
+  layout: Layout[]
+}
+
+export interface IPluginGridProps extends IManipulateSettingsProps<ISettings>, ISettings {
 }
 
 export class PluginGrid extends React.Component<IPluginGridProps, IState> {
@@ -43,6 +34,8 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     this.state = {
       plugins: []
     }
+
+    this.onLayoutChanged = this.onLayoutChanged.bind(this)
   }
 
   public componentDidMount() {
@@ -56,6 +49,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       <RGL
         compactType={null}
         useCSSTransforms={true}
+        onLayoutChange={this.onLayoutChanged}
       >
         {this.generatePluginComponents()}
       </RGL>
@@ -71,14 +65,21 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
   }
 
   private preprocessLayoutData() {
-    const layoutArr = settings.get('overlayed.grid.layout')
-
     const layoutIndexMap : {[key : string] : any} = {}
-    layoutArr.forEach((elem : any) => {
+    this.props.layout.forEach((elem : any) => {
       layoutIndexMap[elem.i] = elem
     })
 
     return layoutIndexMap
+  }
+
+  private onLayoutChanged(layout: Layout[]) {
+    // RGL bug - fires with empty array sometimes
+    if (layout.length > 0) {
+      this.props.updateSettings({
+        layout
+      })
+    }
   }
 
   /**
