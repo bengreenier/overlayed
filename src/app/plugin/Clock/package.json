@@ -1,5 +1,8 @@
 {
   "name": "clock",
   "version": "0.0.1",
-  "main": "ClockPlugin.js"
+  "main": "ClockPlugin.js",
+  "dependencies": {
+    "react": "^16.4.2"
+  }
 }

@@ -76,7 +76,8 @@ const loadPlugins = (dir : string, rootSettings : any) => {
     const componentPath = join(pluginDir, pkg.main as string)
 
     // by default we install if there's deps
-    let needsInstall = pkg.dependencies && Object.keys(pkg.dependencies).length > 0 ? true : false
+    // (we allow react as a dep)
+    let needsInstall = pkg.dependencies && Object.keys(pkg.dependencies).filter(k => k.toLowerCase() !== 'react').length > 0 ? true : false
 
     // however, if there's an install lockfile
     const installLockFilePath = join(pluginDir, pluginInstalledLockFileName)

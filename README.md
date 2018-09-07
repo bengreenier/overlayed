@@ -114,7 +114,6 @@ These will (in order): install dependencies, build the project, start the applic
 + Run `npm init` or manually create a `package.json` file
 + Ensure `package.json` contains `name`, `version`, and `main`
 + Ensure main points to a `.js` file that has a [default export](https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export#Using_the_default_export) (or `module.exports.default = YourClass`)
-+ Ensure you do not include `react` in your dependencies (it's implicit) - for development, you may choose to include it in `devDependencies`
 + Profit! Overlayed will attempt to load your plugin on start
 
 For example:
