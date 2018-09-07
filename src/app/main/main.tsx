@@ -2,17 +2,17 @@ import os from 'os'
 import { join } from 'path'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { PluginGrid } from '../helpers/PluginGrid'
+import { withSettings } from '../helpers/serialization'
+import { PluginGrid } from './PluginGrid'
 
-// the constant user plugin dir
-const userPluginDir = join(os.homedir(), '.overlayed')
+const PluginGridWithSettings = withSettings(PluginGrid as React.ComponentType<any>)
 
 /**
  * Top Level react component
  */
 class MainApp extends React.Component<any, any> {
   public render() {
-    return <PluginGrid userPluginDir={userPluginDir} />
+    return <PluginGridWithSettings settingsKey={'overlayed.grid'} />
   }
 }
 

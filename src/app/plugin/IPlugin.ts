@@ -19,7 +19,12 @@ export interface IPluginProperties {
   /**
    * Does the plugin require an `npm install`
    */
-  requiresInstall: boolean
+  requiresInstall: boolean,
+
+  /**
+   * The object containing plugin settings
+   */
+  settings: any
 }
 
 /**
@@ -31,7 +36,7 @@ export interface IInstalledPlugin extends IPluginProperties{
   /**
    * The actual react component
    */
-  component: React.Component<any, any>
+  component: React.ComponentType<any>
 }
 
 export interface IInstallNeededPlugin extends IPluginProperties {
