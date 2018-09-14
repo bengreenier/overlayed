@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf dist",
     "build": "npm run clean & tsc & npm run build-static",
-    "build-static": "echo require('recursive-copy')(__dirname + '/src', 'dist', {filter: ['!dist**', '!node_modules**', '**/*.html', '**/package.json']})  | node",
+    "build-static": "echo \"require('recursive-copy')(__dirname + '/src', 'dist', {filter: ['!dist**', '!node_modules**', '**/*.html', '**/package.json']})\"  | node",
     "start": "electron .",
     "start-debug": "electron --inspect=5858 .",
     "test": "echo \"Error: no test specified\" && exit 1"
