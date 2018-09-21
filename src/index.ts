@@ -1,9 +1,10 @@
-import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, MenuItem, nativeImage, Tray } from 'electron'
 import settings from 'electron-settings'
 import { CompositeWindow } from './electron/CompositeWindow'
 import { IPCMessageNames } from './ipc/IPCMessageNames';
 
 let mainWindow : CompositeWindow
+let settingsWindow : BrowserWindow
 let mainTray : Tray
 
 // our tray icon
@@ -11,16 +12,17 @@ const mainIcon = nativeImage.createFromDataURL('data:image/png;base64,iVBORw0KGg
 
 // our window dimensions settings key path
 const windowDimsSettingsKey = 'overlayed.window'
+const defaultWindowSettings = {
+  height: 480,
+  width: 680,
+  x: 0,
+  y: 0,
+}
 
 const allocMainWindow = () => {
 
   // see if we have window settings, if so, use them
-  const windowDims = settings.get(windowDimsSettingsKey, {
-    height: 480,
-    width: 680,
-    x: 0,
-    y: 0,
-  }) as {x: number, y: number, width: number, height: number}
+  const windowDims = settings.get(windowDimsSettingsKey, defaultWindowSettings) as {x: number, y: number, width: number, height: number}
 
   // create our window
   mainWindow = new CompositeWindow(windowDims)
@@ -85,6 +87,13 @@ const allocMainWindow = () => {
   }))
 
   mainTrayMenu.append(new MenuItem({
+    click: () => {
+      allocSettingsWindow()
+    },
+    label: 'Edit Settings'
+  }))
+
+  mainTrayMenu.append(new MenuItem({
     label: 'Developer',
     submenu: devTrayMenu,
   }))
@@ -112,6 +121,13 @@ const allocMainWindow = () => {
 
   // setup the tray menus
   mainTray.setContextMenu(mainTrayMenu)
+}
+
+const allocSettingsWindow = () => {
+  settingsWindow = new BrowserWindow(defaultWindowSettings)
+
+  // tell the window to load the entry point
+  settingsWindow.loadFile(`${__dirname}/app/settings/settings.html`)
 }
 
 // app handlers to get things going when electron starts
