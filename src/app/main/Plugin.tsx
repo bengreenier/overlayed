@@ -28,7 +28,7 @@ export class Plugin extends React.Component<IPluginProps, any> {
     return (
       <React.Fragment>
         <span style={this.props.isEditMode ? labelStyle : {display: 'none'}}>
-          {`${this.props.plugin.name} @`}
+          {`${this.props.plugin.name} @ `}
           <a href={'#'} data-open={`file://${this.props.plugin.diskPath}`} onClick={this.onLabelLinkClicked} >
             {this.props.plugin.version}
           </a>
