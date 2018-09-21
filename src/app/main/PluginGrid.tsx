@@ -80,7 +80,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
           key={`${p.name}@${p.version}`}
           data-grid={layoutMap[`${p.name}@${p.version}`]}
         >
-          <Plugin plugin={p}/>
+          <Plugin plugin={p} isEditMode={this.props.isEditMode}/>
         </div>))
   }
 
