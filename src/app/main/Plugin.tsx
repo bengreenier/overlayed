@@ -1,3 +1,4 @@
+import log from 'electron-log'
 import open from 'open'
 import React, { CSSProperties } from 'react'
 import { withSettings } from '../helpers/serialization'
@@ -42,6 +43,7 @@ export class Plugin extends React.Component<IPluginProps, any> {
     if (e.target) {
       const uri = (e.target as HTMLElement).getAttribute('data-open')
       if (uri) {
+        log.info(`plugin label clicked: opening ${uri}`)
         open(uri)
       }
     }

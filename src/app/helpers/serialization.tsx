@@ -1,4 +1,5 @@
 import { remote } from 'electron'
+import log from 'electron-log'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs'
 import moment from 'moment'
 import os from 'os'
@@ -42,6 +43,7 @@ export const withSettings = <Q extends object, P extends IManipulateSettingsProp
 
     private updateSettings(data : IManipulateSettingsProps<Q>) {
       settings.set(this.props.settingsKey, data, { prettify: true })
+      log.verbose(`updating settings: ${this.props.settingsKey} = ${JSON.stringify(data)}`)
     }
   }
 }

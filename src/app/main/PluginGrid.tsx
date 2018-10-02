@@ -1,3 +1,4 @@
+import log from 'electron-log'
 import enpeem from 'enpeem'
 import { readFileSync, writeFileSync } from 'fs'
 import moment from 'moment'
@@ -111,10 +112,14 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
     const noInstallNeeded = plugins.filter(p => !p.requiresInstall) as IInstalledPlugin[]
     const installNeeded = plugins.filter(p => p.requiresInstall) as IInstallNeededPlugin[]
     
+    log.info(`starting load for [${noInstallNeeded.map(e => e.name).join(',')}]`)
+
     // load installed plugins
     this.setState({
       plugins: noInstallNeeded
     })
+
+    log.info(`starting install for [${installNeeded.map(e => e.name).join(',')}]`)
 
     // install the uninstalled plugins
     Promise.all(this.installPlugins(installNeeded)).then((installedPlugins) => {
@@ -122,6 +127,8 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       this.setState({
         plugins: this.state.plugins.concat(installedPlugins)
       })
+    }, (error) => {
+      log.error(`failed installation: ${error}`)
     })
   }
 

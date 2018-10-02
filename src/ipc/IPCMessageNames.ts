@@ -1,5 +1,6 @@
 export enum IPCMessageNames {
   RequestShutdown = 'RequestShutdown',
   AllowShutdown = 'AllowShutdown',
-  ToggleEditMode = 'ToggleEditMode'
+  ToggleEditMode = 'ToggleEditMode',
+  ShowTooltip = 'ShowTooltip'
 }
