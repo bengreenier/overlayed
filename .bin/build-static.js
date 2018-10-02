@@ -2,7 +2,7 @@ const copy = require('recursive-copy')
 
 copy(__dirname + '/../src', 'dist', {
   overwrite: true,
-  filter: ['!dist**', '!node_modules**', '**/*.html', '**/package.json']
+  filter: ['!dist**', '!node_modules**', '**/*.html', '**/package.json', 'electron/assets/**']
 }).then(() => {
   // success, exit 0
   process.exit(0)
