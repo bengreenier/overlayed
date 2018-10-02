@@ -1,5 +1,5 @@
 import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from "electron"
-import { log } from 'electron-log'
+import log from 'electron-log'
 import settings from "electron-settings"
 import os from "os"
 import path from "path"
@@ -13,6 +13,15 @@ export class Bootstrap {
   public tray : Tray
 
   constructor() {
+    // setup ipc commands
+
+    // support showing tooltips
+    ipcMain.on(IPCMessageNames.ShowTooltip, (e : Event, tooltipOpts : Electron.DisplayBalloonOptions) => {
+      log.info(`showing tooltip ${tooltipOpts.title}`)
+
+      this.tray.displayBalloon(tooltipOpts)
+    })
+
     // setup the tray
     this.tray = new Tray(this.getTrayIcon())
 
@@ -27,7 +36,6 @@ export class Bootstrap {
     this.compositor = new CompositeWindow(this.getCompositorSettings())
 
     this.compositor.loadFile(`${__dirname}/../app/main/main.html`)
-    
 
     let isShuttingDown = false
     this.compositor.on('close', (e) => {
@@ -59,7 +67,7 @@ export class Bootstrap {
         { prettify: true })
     })
 
-    log('completed electron bootstrapping')
+    log.info('completed electron bootstrapping')
   }
 
   private getCompositorSettings() {

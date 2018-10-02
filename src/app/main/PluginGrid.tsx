@@ -1,3 +1,4 @@
+import { ipcRenderer } from 'electron'
 import log from 'electron-log'
 import enpeem from 'enpeem'
 import { readFileSync, writeFileSync } from 'fs'
@@ -5,6 +6,7 @@ import moment from 'moment'
 import { join } from 'path'
 import React, { CSSProperties } from 'react'
 import ReactGridLayout, { Layout, WidthProvider } from 'react-grid-layout'
+import { IPCMessageNames } from '../../ipc/IPCMessageNames';
 import { pluginInstalledLockFileName } from '../helpers/constants'
 import { getPlugins, IManipulateSettingsProps } from '../helpers/serialization'
 import { IInstalledPlugin, IInstallNeededPlugin } from '../plugin/IPlugin'
@@ -108,7 +110,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
    */
   private loadPlugins() {
     // splits out install required and !install required plugins
-    const plugins = getPlugins()
+    const plugins = getPlugins().filter(p => typeof (p as any).component !== 'undefined')
     const noInstallNeeded = plugins.filter(p => !p.requiresInstall) as IInstalledPlugin[]
     const installNeeded = plugins.filter(p => p.requiresInstall) as IInstallNeededPlugin[]
     
@@ -150,9 +152,20 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
         }, (err) => {
           // if we error, fail out, otherwise resolve to an IInstalledPlugin
           if (err) { reject(err) }
-          resolve({...plugin, ...{
-            component: require(plugin.component).default as React.ComponentType<any>
-          }} as IInstalledPlugin)
+          try {
+            resolve({...plugin, ...{
+              component: require(plugin.component).default as React.ComponentType<any>
+            }} as IInstalledPlugin)
+          } catch (ex) {
+            // show tooltips and log failures loading components
+            const errorContents = `Failed to load ${plugin.name} from ${plugin.diskPath}`
+    
+            ipcRenderer.send(IPCMessageNames.ShowTooltip, {
+              content: errorContents,
+              title: 'Plugin Load Error',
+            })
+            log.error(errorContents)
+          }
         })
       }).then((installedPlugin) => {
 
