@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from 'electron'
+import { app, ipcMain, Menu, MenuItem, nativeImage, Tray, screen } from 'electron'
 import settings from 'electron-settings'
 import { platform } from 'os'
 import path from 'path'
@@ -53,6 +53,10 @@ const allocMainWindow = () => {
   // create our window
   mainWindow = new CompositeWindow(windowDims)
   
+  // reading the size of primary display and then adjusting the window size
+  const {width, height} = screen.getPrimaryDisplay().workAreaSize
+  mainWindow.setSize(width,height)
+
   // tell the window to load the entry point
   mainWindow.loadFile(`${__dirname}/app/main/main.html`)
 
