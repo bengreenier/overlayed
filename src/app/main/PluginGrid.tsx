@@ -36,7 +36,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
       editStyles: this.props.editStyles || {
         backgroundColor: 'rgba(51, 138, 46, 0.6)'
       },
-      layout: this.props.layout,
+      layout: this.props.layout || [],
       plugins: []
     }
 
