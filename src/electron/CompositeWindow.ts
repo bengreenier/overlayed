@@ -1,5 +1,5 @@
 import { BrowserWindow, BrowserWindowConstructorOptions } from "electron"
-import { log } from "electron-log"
+import log from "electron-log"
 import { IPCMessageNames } from "../ipc/IPCMessageNames"
 
 /**
@@ -31,7 +31,7 @@ export class CompositeWindow extends BrowserWindow {
 
     // notify react side
     this.webContents.send(IPCMessageNames.ToggleEditMode, this.isInteractive)
-    log('toggled compositor interactivity')
+    log.info('toggled compositor interactivity')
   }
 
   /**
@@ -39,6 +39,6 @@ export class CompositeWindow extends BrowserWindow {
    */
   public toggleDevTools() {
     this.webContents.toggleDevTools()
-    log('toggled compositor DevTools')
+    log.info('toggled compositor DevTools')
   }
 }
