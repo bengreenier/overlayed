@@ -4,7 +4,6 @@ import { platform } from 'os'
 import path from 'path'
 import { CompositeWindow } from './electron/CompositeWindow'
 import { IPCMessageNames } from './ipc/IPCMessageNames';
-import { isUndefined } from 'util';
 
 let mainWindow : CompositeWindow
 let mainTray : Tray
