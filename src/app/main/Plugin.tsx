@@ -1,7 +1,11 @@
+import { ipcRenderer } from 'electron'
+import log from 'electron-log'
 import open from 'open'
 import React, { CSSProperties } from 'react'
+import { IPCMessageNames } from '../../ipc/IPCMessageNames'
 import { withSettings } from '../helpers/serialization'
 import { IInstalledPlugin } from '../plugin/IPlugin'
+import { ErrorBoundary } from './ErrorBoundry'
 
 interface IPluginProps {
   plugin : IInstalledPlugin,
@@ -20,6 +24,7 @@ export class Plugin extends React.Component<IPluginProps, any> {
     super(props)
 
     this.onLabelLinkClicked = this.onLabelLinkClicked.bind(this)
+    this.onError = this.onError.bind(this)
   }
 
   public render() {
@@ -33,7 +38,9 @@ export class Plugin extends React.Component<IPluginProps, any> {
             {this.props.plugin.version}
           </a>
         </span>
-        <PluginWithSettings settingsKey={this.props.plugin.name} />
+        <ErrorBoundary onError={this.onError}>
+          <PluginWithSettings settingsKey={this.props.plugin.name} />
+        </ErrorBoundary>
       </React.Fragment>
     )
   }
@@ -42,8 +49,20 @@ export class Plugin extends React.Component<IPluginProps, any> {
     if (e.target) {
       const uri = (e.target as HTMLElement).getAttribute('data-open')
       if (uri) {
+        log.info(`plugin label clicked: opening ${uri}`)
         open(uri)
       }
     }
+  }
+
+  private onError(err : Error) {
+    // show tooltips and log failures loading components
+    const errorContents = `Failed to render ${this.props.plugin.name} located at ${this.props.plugin.diskPath}`
+    
+    ipcRenderer.send(IPCMessageNames.ShowTooltip, {
+      content: errorContents,
+      title: 'Plugin Render Error',
+    })
+    log.error(errorContents)
   }
 }

@@ -1,9 +1,11 @@
-import { remote } from 'electron'
+import { ipcRenderer, remote } from 'electron'
+import log from 'electron-log'
 import { existsSync, lstatSync, readdirSync, readFileSync } from 'fs'
 import moment from 'moment'
 import os from 'os'
 import { join } from 'path'
 import React from 'react'
+import { IPCMessageNames } from '../../ipc/IPCMessageNames'
 import { IInstalledPlugin, IInstallNeededPlugin, IPluginProperties } from '../plugin/IPlugin'
 import { pluginInstalledLockFileName } from './constants'
 
@@ -42,6 +44,7 @@ export const withSettings = <Q extends object, P extends IManipulateSettingsProp
 
     private updateSettings(data : IManipulateSettingsProps<Q>) {
       settings.set(this.props.settingsKey, data, { prettify: true })
+      log.verbose(`updating settings: ${this.props.settingsKey} = ${JSON.stringify(data)}`)
     }
   }
 }
@@ -114,9 +117,23 @@ const loadPlugins = (dir : string, rootSettings : any) => {
         component: componentPath
       }} as IInstallNeededPlugin
     } else {
-      return {...plugin, ...{
-        component: require(componentPath).default as React.ComponentType<any>
-      }} as IInstalledPlugin
+      try {
+        return {...plugin, ...{
+          component: require(componentPath).default as React.ComponentType<any>
+        }} as IInstalledPlugin
+      } catch (ex) {
+        // show tooltips and log failures loading components
+        const errorContents = `Failed to load ${plugin.name} from ${plugin.diskPath}`
+
+        ipcRenderer.send(IPCMessageNames.ShowTooltip, {
+          content: errorContents,
+          title: 'Plugin Load Error',
+        })
+        log.error(errorContents)
+
+        // passthrough the existing plugin object
+        return plugin
+      }
     }
   })
 }

@@ -1,9 +1,8 @@
 import { ipcRenderer } from 'electron'
-import os from 'os'
-import { join } from 'path'
+import log from 'electron-log'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { IPCMessageNames } from '../../ipc/IPCMessageNames';
+import { IPCMessageNames } from '../../ipc/IPCMessageNames'
 import { withSettings } from '../helpers/serialization'
 import { PluginGrid } from './PluginGrid'
 
@@ -56,8 +55,12 @@ ReactDOM.render(React.createElement(MainApp, null), topLevelNode)
 
 // listen for shutdown
 ipcRenderer.on(IPCMessageNames.RequestShutdown, () => {
+  log.info('starting renderer shutdown')
+
   // wait for the dom changes to actually occur
   const obs = new MutationObserver(() => {
+    log.info('renderer nodes unmounted, finishing shutdown')
+
     // report back that we're safe to unload now
     ipcRenderer.sendSync(IPCMessageNames.AllowShutdown)
   })
