@@ -82,7 +82,15 @@ home/
       OtherPlugin.js
 ```
 
-Other than installing custom plugins, you cannot currently configure values for custom plugins.
+All plugins, including custom plugins, are now configurable by adding an object to the configuration file containing the plugin config, indexed by the plugin name.
+
+For instance:
+
+{
+    "clock": {
+       "locale": "en-US"
+    }
+}
 
 ## Contributing
 
