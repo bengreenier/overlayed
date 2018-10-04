@@ -65,7 +65,7 @@ To configure the screen layout, modify the following settings:
 
 ### Built-In Overlays
 
-Overlayed ships with some built-in overlays. These live [in this directory](./src/app/plugin). There are now configurable!  You can find this information below.
+Overlayed ships with some built-in overlays. These live [in this directory](./src/app/plugin) and are now configurable!  You can find more information below.
 
 ### Custom Overlays
 
