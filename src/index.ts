@@ -1,9 +1,10 @@
-import { app, ipcMain, Menu, MenuItem, nativeImage, Tray, screen } from 'electron'
+import { app, ipcMain, Menu, MenuItem, nativeImage, screen, Tray } from 'electron'
 import settings from 'electron-settings'
 import { platform } from 'os'
 import path from 'path'
 import { CompositeWindow } from './electron/CompositeWindow'
 import { IPCMessageNames } from './ipc/IPCMessageNames';
+import { isUndefined } from 'util';
 
 let mainWindow : CompositeWindow
 let mainTray : Tray
@@ -41,21 +42,20 @@ const getTrayIcon = () => {
 const windowDimsSettingsKey = 'overlayed.window'
 
 const allocMainWindow = () => {
+  
+  // create our window
+  mainWindow = new CompositeWindow()
 
   // see if we have window settings, if so, use them
-  const windowDims = settings.get(windowDimsSettingsKey, {
-    height: 480,
-    width: 680,
-    x: 0,
-    y: 0,
-  }) as {x: number, y: number, width: number, height: number}
+  // if there is no window settings available 
+  // we read the size of primary display and then adjusting the window size to it
+  const windowDims = settings.get(
+    windowDimsSettingsKey, 
+    screen.getPrimaryDisplay().workArea
+  ) as {x: number, y: number, width: number, height: number}  
 
-  // create our window
-  mainWindow = new CompositeWindow(windowDims)
-  
-  // reading the size of primary display and then adjusting the window size
-  const {width, height} = screen.getPrimaryDisplay().workAreaSize
-  mainWindow.setSize(width,height)
+  mainWindow.setSize( windowDims.width, windowDims.height, false)
+  mainWindow.setPosition(windowDims.x, windowDims.y, false)
 
   // tell the window to load the entry point
   mainWindow.loadFile(`${__dirname}/app/main/main.html`)
