@@ -65,7 +65,7 @@ To configure the screen layout, modify the following settings:
 
 ### Built-In Overlays
 
-Overlayed ships with some built-in overlays. These live [in this directory](./src/app/plugin). There are currently not configurable.
+Overlayed ships with some built-in overlays. These live [in this directory](./src/app/plugin). There are now configurable!  You can find this information below.
 
 ### Custom Overlays
 
@@ -82,7 +82,13 @@ home/
       OtherPlugin.js
 ```
 
-Other than installing custom plugins, you cannot currently configure values for custom plugins.
+All plugins, including custom plugins, are now configurable by adding an object to the configuration file containing the plugin config, indexed by the plugin name.
+ For instance:
+ {
+    "clock": {
+       "locale": "en-US"
+    }
+}
 
 ## Contributing
 
