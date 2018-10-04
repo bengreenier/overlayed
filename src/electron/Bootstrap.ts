@@ -1,5 +1,5 @@
 import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from "electron"
-import log from 'electron-log'
+import log from "electron-log"
 import settings from "electron-settings"
 import os from "os"
 import path from "path"
