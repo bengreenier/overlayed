@@ -130,7 +130,7 @@ export class PluginGrid extends React.Component<IPluginGridProps, IState> {
         plugins: this.state.plugins.concat(installedPlugins)
       })
     }, (error) => {
-      log.error(`failed installation: ${error}`)
+      log.error(`failed installation, ${error}`)
     })
   }
 
