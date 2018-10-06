@@ -53,6 +53,11 @@ const allocMainWindow = () => {
   // create our window
   mainWindow = new CompositeWindow(windowDims)
   
+  // const windowDims = settings.get(
+  //   windowDimsSettingsKey, 
+  //   screen.getPrimaryDisplay().workArea
+  // ) as {x: number, y: number, width: number, height: number}  
+
   // reading the size of primary display and then adjusting the window size
   const {width, height} = screen.getPrimaryDisplay().workAreaSize
   mainWindow.setSize(width,height)
