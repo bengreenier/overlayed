@@ -74,12 +74,6 @@ export class Bootstrap {
     return settings.get(
       windowSettingsKey,
       screen.getPrimaryDisplay().workArea
-    //   {
-    //   height: 480,
-    //   width: 680,
-    //   x: 0,
-    //   y: 0,
-    // }
     ) as {x: number, y: number, width: number, height: number}
   }
 
