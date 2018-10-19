@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, MenuItem, nativeImage, Tray } from "electron"
+import { app, ipcMain, Menu, MenuItem, nativeImage, screen, Tray } from "electron"
 import log from "electron-log"
 import settings from "electron-settings"
 import os from "os"
@@ -71,12 +71,10 @@ export class Bootstrap {
   }
 
   private getCompositorSettings() {
-    return settings.get(windowSettingsKey, {
-      height: 480,
-      width: 680,
-      x: 0,
-      y: 0,
-    }) as {x: number, y: number, width: number, height: number}
+    return settings.get(
+      windowSettingsKey,
+      screen.getPrimaryDisplay().workArea
+    ) as {x: number, y: number, width: number, height: number}
   }
 
   private buildTrayMenu() {
