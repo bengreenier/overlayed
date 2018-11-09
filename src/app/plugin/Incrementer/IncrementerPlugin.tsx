@@ -28,7 +28,8 @@ export default class RangeMathPlugin extends React.Component<IProps, ISettings> 
   }
 
   public componentDidMount() {
-    this.tickInterval = setInterval(this.tick.bind(this), 5000)
+    // TODO(bengreenier): stop this casting insanity
+    (this.tickInterval as any) = setInterval(this.tick.bind(this), 5000)
   }
 
   public componentWillUnmount() {

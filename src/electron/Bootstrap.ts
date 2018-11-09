@@ -1,4 +1,4 @@
-import { app, ipcMain, Menu, MenuItem, nativeImage, screen, Tray } from "electron"
+import { app, BrowserWindow, ipcMain, Menu, MenuItem, nativeImage, screen, Tray } from "electron"
 import log from "electron-log"
 import settings from "electron-settings"
 import os from "os"
@@ -10,6 +10,7 @@ const windowSettingsKey = 'overlayed.window'
 
 export class Bootstrap {
   public compositor : CompositeWindow
+  public settings ?: BrowserWindow
   public tray : Tray
 
   constructor() {
@@ -34,7 +35,6 @@ export class Bootstrap {
 
     // setup the compositor
     this.compositor = new CompositeWindow(this.getCompositorSettings())
-
     this.compositor.loadFile(`${__dirname}/../app/main/main.html`)
 
     let isShuttingDown = false
@@ -86,6 +86,19 @@ export class Bootstrap {
         this.compositor.toggleWindowInteractivity()
       },
       label: 'Toggle Edit',
+    }))
+
+    mainTrayMenu.append(new MenuItem({
+      click: () => {
+        if (this.settings && !this.settings.isDestroyed()) {
+          this.settings.show()
+        } else {
+          // setup the settings
+          this.settings = new BrowserWindow()
+          this.settings.loadFile(`${__dirname}/../app/settings/settings.html`)
+        }
+      },
+      label: 'Settings',
     }))
 
     mainTrayMenu.append(new MenuItem({

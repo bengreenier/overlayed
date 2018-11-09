@@ -30,7 +30,8 @@ export default class ClockPlugin extends React.Component<IProps, IState> {
   }
 
   public componentDidMount() {
-    this.clockInterval = setInterval(this.tick.bind(this), 1000)
+    // TODO(bengreenier): stop this casting insanity
+    (this.clockInterval as any) = setInterval(this.tick.bind(this), 1000)
   }
 
   public componentWillUnmount() {
