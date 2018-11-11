@@ -1,5 +1,18 @@
 {
   "name": "incrementer",
   "version": "0.0.1",
-  "main": "IncrementerPlugin.js"
+  "main": "IncrementerPlugin.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Incrementer Config",
+      "properties": {
+        "value": {
+          "type": "number",
+          "default": 0,
+          "description": "the incrementer value"
+        }
+      }
+    }
+  }
 }

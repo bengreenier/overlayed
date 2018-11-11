@@ -23,6 +23,13 @@ export class Bootstrap {
       this.tray.displayBalloon(tooltipOpts)
     })
 
+    // support reloading compositor
+    ipcMain.on(IPCMessageNames.RequestCompositorReload, () => {
+      if (this.compositor && !this.compositor.isDestroyed()) {
+        this.compositor.reload()
+      }
+    })
+
     // setup the tray
     this.tray = new Tray(this.getTrayIcon())
 

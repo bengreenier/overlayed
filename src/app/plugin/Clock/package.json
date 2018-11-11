@@ -7,15 +7,15 @@
   },
   "contributes": {
     "configuration": {
-        "type": "object",
-        "title": "Clock Config",
-        "properties": {
-            "locale": {
-              "type": "string",
-              "default": "en-US",
-              "description": "time locale of the clock"
-            }
+      "type": "object",
+      "title": "Clock Config",
+      "properties": {
+        "locale": {
+          "type": "string",
+          "default": "en-US",
+          "description": "time locale of the clock"
         }
+      }
     }
   }
 }

@@ -1,5 +1,17 @@
 {
   "name": "muxy-alerts",
   "version": "0.0.1",
-  "main": "MuxyAlertsPlugin.js"
+  "main": "MuxyAlertsPlugin.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "Muxy Config",
+      "properties": {
+        "alertUrl": {
+          "type": "string",
+          "description": "the alert url from muxy"
+        }
+      }
+    }
+  }
 }
