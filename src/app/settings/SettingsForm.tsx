@@ -63,9 +63,6 @@ export class SettingsForm extends React.Component<any, {
   }
 
   public render() {
-    // tslint:disable-next-line:no-console
-    console.log(this.state.sources)
-    
     return (
       <CForm
         rawSources={systemBuiltInsRaw}
@@ -77,9 +74,6 @@ export class SettingsForm extends React.Component<any, {
   }
 
   private handleData = (data : any) => {
-    // tslint:disable-next-line:no-console
-    console.log(data)
-
     const settingsData = data.formData
 
     Object.keys(settingsData).forEach((key) => {
