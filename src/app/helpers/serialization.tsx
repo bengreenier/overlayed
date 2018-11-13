@@ -25,11 +25,23 @@ export interface IManipulateSettingsProps<TSettings = {}> {
 // TODO(bengreenier): the typing on the return isn't coming through :(
 export const withSettings = <Q extends object, P extends IManipulateSettingsProps<Q>>(Comp : React.ComponentType<P>, compSettings ?: any) => {
   return class WithSettings extends React.Component<P & IWithSettingsProps, any> {
+    private settingsObserver : any
 
     constructor(props : P & IWithSettingsProps) {
       super(props)
       
       this.updateSettings = this.updateSettings.bind(this)
+      this.onKeyChanged = this.onKeyChanged.bind(this)
+    }
+
+    public componentDidMount() {
+      this.settingsObserver = settings.watch(this.props.settingsKey, this.onKeyChanged)
+    }
+
+    public componentWillUnmount() {
+      if (this.settingsObserver) {
+        this.settingsObserver.dispose()
+      }
     }
 
     public render() {
@@ -45,6 +57,10 @@ export const withSettings = <Q extends object, P extends IManipulateSettingsProp
     private updateSettings(data : IManipulateSettingsProps<Q>) {
       settings.set(this.props.settingsKey, data, { prettify: true })
       log.verbose(`updating settings: ${this.props.settingsKey} = ${JSON.stringify(data)}`)
+    }
+
+    private onKeyChanged(newVal : any, oldVal : any) {
+      this.forceUpdate()
     }
   }
 }

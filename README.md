@@ -27,7 +27,16 @@ Currently, This project is in Alpha status. As such, the only way to install is 
 
 ## Configuration
 
-> Note: we don't support a configuration editor today, but one is coming! ✨ 
+> Note: Most folks will use our __shiny new editor__ ✨ 
+
+To open the settings editor, click the Overlayed icon in your taskbar, and choose "Settings".
+
+![settings editor](.github/access-settings.png)
+
+<details>
+<summary>
+Technical details
+</summary>
 
 Overlayed uses [electron-settings](https://github.com/nathanbuchar/electron-settings) under the hood, which saves settings to different locations based on your operating system. 
 
@@ -89,6 +98,8 @@ All plugins, including custom plugins, are now configurable by adding an object 
        "locale": "en-US"
     }
 }
+
+</details>
 
 ## Contributing
 
