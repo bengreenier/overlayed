@@ -7,9 +7,29 @@
     "clean": "rimraf dist",
     "build": "npm run clean && tsc && npm run build-static",
     "build-static": "node .bin/build-static.js",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
     "start": "electron .",
     "start-debug": "electron --inspect=5858 .",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "directories": {
+      "output": "bin"
+    },
+    "files": [
+      "dist/**/*",
+      "build/**/*",
+      "node_modules/**/*",
+      "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!**/node_modules/*.d.ts",
+      "!**/node_modules/.bin"
+    ],
+    "appId": "com.bengreenier.overlayed",
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
   },
   "repository": {
     "type": "git",
@@ -23,7 +43,6 @@
   "homepage": "https://github.com/bengreenier/overlayed#readme",
   "dependencies": {
     "@overlayed-app/contributes-form": "^1.2.1",
-    "electron": "^3.0.8",
     "electron-log": "^2.2.17",
     "electron-settings": "^3.2.0",
     "enpeem": "^2.2.0",
@@ -35,12 +54,14 @@
     "react-grid-layout": "^0.16.6"
   },
   "devDependencies": {
+    "electron": "^3.0.8",
     "@types/electron-settings": "^3.1.1",
     "@types/moment": "^2.13.0",
     "@types/open": "0.0.29",
     "@types/react": "^16.7.3",
     "@types/react-dom": "^16.0.9",
     "@types/react-grid-layout": "^0.16.5",
+    "electron-builder": "^20.36.2",
     "prettier": "1.14.0",
     "recursive-copy": "^2.0.9",
     "rimraf": "^2.6.2",

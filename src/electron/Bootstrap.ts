@@ -139,26 +139,26 @@ export class Bootstrap {
 
   private getTrayIcon() {
     const getNativeImage = (filename: string) =>
-      nativeImage.createFromPath(path.join(__dirname, 'assets/images', filename))
+      nativeImage.createFromPath(path.join(__dirname, '../../build', filename))
   
     // Load correct icon depending on the current platform.
     switch (os.platform()) {
   
-      // Use the 16x16 (tray.png) and 32x32 (tray@2x.png) versions for macOS.
+      // Use the 16x16 (icon.png) and 32x32 (icon@2x.png) versions for macOS.
       // The system chosses the correct file automatically.
       // We also need to set it as a template image so macOS can colour it depending on the current system theme.
       case 'darwin':
-        const image = getNativeImage('tray.png')
+        const image = getNativeImage('icon.png')
         image.setTemplateImage(true)
         return image
       
       // Use the ICO file for Windows.
       case 'win32':
-        return getNativeImage('tray.ico')
+        return getNativeImage('icon.ico')
   
       // Use the 'raw' PNG file for all other platforms.
       default:
-        return getNativeImage('trayFull.png')
+        return getNativeImage('iconFull.png')
     }
   }
 }
