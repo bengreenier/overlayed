@@ -1,5 +1,6 @@
 import { app } from 'electron'
 import log from 'electron-log'
+import { autoUpdater } from 'electron-updater'
 import { Bootstrap } from './electron/Bootstrap'
 
 let bs : Bootstrap
@@ -10,6 +11,9 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const allocMainWindow = () => {
+  // spin off a check for updates
+  autoUpdater.checkForUpdatesAndNotify()
+
   bs = new Bootstrap()
 
   // cleanup when we're closed

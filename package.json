@@ -9,6 +9,7 @@
     "build-static": "node .bin/build-static.js",
     "pack": "npm run build && electron-builder --dir",
     "dist": "npm run build && electron-builder",
+    "publish": "build -p always",
     "start": "electron .",
     "start-debug": "electron --inspect=5858 .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +27,11 @@
       "!**/node_modules/*.d.ts",
       "!**/node_modules/.bin"
     ],
+    "publish": [{
+      "provider": "github",
+      "owner": "bengreenier",
+      "repo": "overlayed"
+    }],
     "appId": "com.bengreenier.overlayed",
     "mac": {
       "category": "public.app-category.productivity"
@@ -45,6 +51,7 @@
     "@overlayed-app/contributes-form": "^1.2.1",
     "electron-log": "^2.2.17",
     "electron-settings": "^3.2.0",
+    "electron-updater": "^4.0.4",
     "enpeem": "^2.2.0",
     "merge": "^1.2.1",
     "moment": "^2.22.2",
